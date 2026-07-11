@@ -1,0 +1,513 @@
+/* Güneş Klima - Çok Dilli Site (TR / EN / DE / RU) */
+(function () {
+  'use strict';
+
+  var SUPPORTED = ['tr', 'en', 'de', 'ru'];
+  var STORAGE_KEY = 'gk_lang';
+
+  var META = {
+    tr: {
+      title: 'Alanya Klima Satışı, Kurulumu, Tamiri ve Temizliği | Güneş Klima',
+      description: "Alanya'da sıfır ve ikinci el klima satışı, montaj/kurulum, tamir-arıza servisi, gaz dolumu, kimyasal temizlik ve bakım. Split, VRF, kaset ve salon tipi tüm klima sistemleri. ☎ 0534 350 36 30"
+    },
+    en: {
+      title: 'Air Conditioner Sales, Installation, Repair & Cleaning in Alanya | Güneş Klima',
+      description: 'New and used air conditioner sales, installation, repair, gas refill and chemical cleaning in Alanya. All split, VRF, cassette and floor-standing AC systems. Same-day service. ☎ +90 534 350 36 30'
+    },
+    de: {
+      title: 'Klimaverkauf, Montage, Reparatur und Reinigung in Alanya | Güneş Klima',
+      description: 'Verkauf neuer und gebrauchter Klimaanlagen, Montage, Reparatur, Gasbefüllung und chemische Reinigung in Alanya. Alle Split-, VRF-, Kassetten- und Standklimasysteme. Service am selben Tag. ☎ +90 534 350 36 30'
+    },
+    ru: {
+      title: 'Продажа, установка, ремонт и чистка кондиционеров в Алании | Güneş Klima',
+      description: 'Продажа новых и б/у кондиционеров, монтаж, ремонт, заправка фреоном и химическая чистка в Алании. Все типы систем: сплит, VRF, кассетные и напольные. Обслуживание в тот же день. ☎ +90 534 350 36 30'
+    }
+  };
+
+  var TR = {
+    'nav.home': 'Anasayfa',
+    'nav.services': 'Hizmetlerimiz',
+    'nav.why': 'Neden Biz?',
+    'nav.gallery': 'Önce/Sonra',
+    'nav.regions': 'Hizmet Bölgeleri',
+    'nav.contact': 'İletişim',
+    'btn.call': 'Hemen Ara',
+    'btn.whatsapp': "WhatsApp'tan Yaz",
+    'hero.badge': '7/24 Alanya Klima Servisi',
+    'hero.title': "Alanya'da Klima Satışı, Kurulumu, Tamiri ve Bakımı",
+    'hero.subtitle': 'Sıfır ve ikinci el klima satışı, montaj, tamir-arıza servisi, gaz dolumu ve kimyasal temizlik dahil klimanızla ilgili her ihtiyaca aynı gün, garantili ve 7/24 ulaşılabilir profesyonel çözüm sunuyoruz.',
+    'services.tag': 'Uzmanlık Alanlarımız',
+    'services.title': 'Hizmetlerimiz',
+    'services.desc': 'Klima alımından kurulumuna, arıza onarımından düzenli bakım ve temizliğine kadar ihtiyacınız olan her hizmeti tek elden sunuyoruz.',
+    'services.linkText': 'Detaylı Bilgi & Ara',
+    'svc.sale.title': 'Sıfır ve İkinci El Klima Satışı',
+    'svc.sale.text': 'İhtiyacınıza ve bütçenize uygun sıfır ve ikinci el split, kaset ve salon tipi klimaları güvenilir seçeneklerle temin ediyoruz. İkinci el cihazlarda teknik kontrol ve bakım yapılarak teslim ediyoruz.',
+    'svc.install.title': 'Klima Montaj ve Kurulum Hizmeti',
+    'svc.install.text': 'Yeni aldığınız veya taşınma sonrası sökülen klimanızın montajını, iç/dış ünite bağlantılarını ve vakumlama işlemini standartlara uygun, güvenli ve düzgün şekilde gerçekleştiriyoruz.',
+    'svc.repair.title': 'Klima Tamir ve Arıza Servisi',
+    'svc.repair.text': 'Soğutmayan, gaz kaçıran, ses yapan veya hiç çalışmayan klimalarınız için arıza tespiti, gaz dolumu ve parça değişimi dahil hızlı ve garantili tamir hizmeti sunuyoruz.',
+    'svc.chem.title': 'Kimyasal Klima Temizliği',
+    'svc.chem.text': 'Klima evaporatör ve serpantin yüzeylerinde biriken inatçı kir, bakteri ve küfleri özel basınçlı temizlik cihazlarımız ve zararsız antibakteriyel kimyasallarla derinlemesine temizliyoruz. Hava kalitenizi maksimuma çıkarıyoruz.',
+    'svc.split.title': 'Split Klima Temizliği',
+    'svc.split.text': 'Ev ve ofis tipi standart split klimalarınızın iç ünite filtreleri, fan pervanesi, drenaj tavası ve dış ünite serpantinlerini titizlikle temizliyoruz. Kötü kokuları önlüyor, yüksek performans ve enerji tasarrufu sağlıyoruz.',
+    'svc.vrf.title': 'VRF / Multi Sistem Temizliği',
+    'svc.vrf.text': 'Büyük ölçekli ticari işletmeler, oteller ve iş merkezlerinde kullanılan VRF ve multi klima sistemlerinin bakımını uzman kadromuzla yapıyoruz. Sistem verimliliğini korumak için dış üniteleri ve tüm iç üniteleri temizliyoruz.',
+    'svc.cassette.title': 'Kaset Tipi Klima Temizliği',
+    'svc.cassette.text': 'Asma tavanlarda konumlandırılan kaset tipi klimaların 4 yönlü hava panellerini, yoğuşma pompalarını ve evaporatör peteklerini özel koruyucu kılıflar kullanarak çevreye zarar vermeden basınçlı su ve kimyasalla temizliyoruz.',
+    'svc.salon.title': 'Salon Tipi Klima Temizliği',
+    'svc.salon.text': 'Yüksek hava debisine sahip salon tipi büyük kapasiteli klimaların geniş serpantin yüzeylerini, hava filtrelerini ve iç fan sistemlerini temizliyoruz. Yüksek hava akışının kesintisiz ve temiz olmasını sağlıyoruz.',
+    'svc.disinfect.title': 'Klima Dezenfeksiyonu',
+    'svc.disinfect.text': 'Klimanızın iç ünitesinde biriken bakteri, küf ve virüsleri özel antibakteriyel solüsyonlarla yok ediyoruz. Astım, alerji ve solunum yolu rahatsızlıkları için kritik olan derin hijyen hizmeti, kötü kokuların ve toz üflemesinin önüne geçer.',
+    'why.tag': 'Neden Güneş Klima?',
+    'why.title': 'Bizi Neden Tercih Etmelisiniz?',
+    'why.desc': 'Alanya geneli mobil servisimizle klima alımından tamirine, kurulumundan bakımına kadar güvenilir ve profesyonel hizmet sunuyoruz.',
+    'why.card1.title': 'Aynı Gün Servis',
+    'why.card1.text': 'Alanya içinde 7/24 hızlı ulaşım sağlayarak talebinizi oluşturduğunuz gün adresinize gelip hizmetinizi gerçekleştiriyoruz.',
+    'why.card2.title': 'Garantili İşçilik',
+    'why.card2.text': 'Yaptığımız her satış, montaj, tamir ve temizlik işlemi garantilidir. Müşteri memnuniyetini en üst düzeyde tutuyoruz.',
+    'why.card3.title': 'Modern Ekipman',
+    'why.card3.text': 'Klimanıza zarar vermeyen profesyonel montaj ve basınçlı yıkama ekipmanları, koruyucu kılıflar kullanarak sıfır kirlilikle hizmet veriyoruz.',
+    'why.card4.title': 'Şeffaf Fiyat',
+    'why.card4.text': 'İşlem öncesinde satış, montaj veya bakım için yapılacak tüm işlemleri belirtir, sonradan sürpriz ek ücret talep etmeyiz.',
+    'gallery.tag': 'Uygulamalarımız',
+    'gallery.title': 'İşlerimizden Örnekler',
+    'gallery.desc': 'Klima bakımı ve temizliği öncesi-sonrası görüntülerle sunduğumuz hijyen farkını inceleyin.',
+    'gallery.card1': 'Split Klima Evaporatör Temizliği',
+    'gallery.card2': 'Kimyasal Derin Serpantin Bakımı',
+    'gallery.card3': 'Kaset Tipi Klima İç Ünite Fanı',
+    'gallery.card4': 'Salon Tipi Klima Filtre Temizliği',
+    'gallery.card5': 'Dış Ünite Serpantin Temizliği',
+    'gallery.card6': 'Drenaj Tavası ve Küf Temizliği',
+    'gallery.before': 'Önce',
+    'gallery.after': 'Sonra',
+    'faq.tag': 'Sıkça Sorulanlar',
+    'faq.title': 'Klima Bakımı Hakkında Sorular',
+    'faq.desc': 'Klima satışı, kurulumu, tamiri, temizliği ve bakımı ile ilgili en çok merak edilen soruları yanıtladık.',
+    'faq.q1.q': 'Klimadan kötü koku geliyor, sebebi ne olabilir?',
+    'faq.q1.a': "Klimadan gelen kötü koku genellikle iç üniteye yerleşen küf, bakteri ve nemli ortamda biriken organik artıklardan kaynaklanır. Standart filtre temizliği bu sorunu çözmez, kimyasal derin temizlik gerekir. Alanya'da aynı gün servisle klimanızın evaporatörünü ve drenaj tavasını dezenfekte ediyoruz.",
+    'faq.q2.q': 'Klima neden toz üflüyor?',
+    'faq.q2.a': 'Klima toz üflüyorsa iç ünite filtreleri ve fan pervanesi ciddi şekilde kirlenmiş demektir. Filtrenin sadece silkelenmesi yetmez; fan kanatlarının ve evaporatörün basınçlı su ve kimyasal ile yıkanması gerekir. Bu işlem hem solunan havanın kalitesini artırır hem klima ömrünü uzatır.',
+    'faq.q3.q': 'Klimadan gelen küf kokusu nasıl geçer?',
+    'faq.q3.a': 'Küf kokusu kimyasal dezenfeksiyon olmadan kalıcı geçmez. Spreyler ve ev tipi çözümler geçici sonuç verir, 1-2 hafta sonra koku tekrar başlar. Profesyonel kimyasal klima temizliği, küf ve bakterileri kaynağında yok ettiği için kalıcı çözümdür.',
+    'faq.q4.q': 'Klimam soğutmuyorsa sebebi temizlik mi olabilir?',
+    'faq.q4.a': "Evet, kirli filtre ve tıkanmış serpantinler klimanın soğutma performansını %30'a kadar düşürebilir. Bakım sonrası performans çoğunlukla normale döner. Eğer temizlik sonrası hâlâ soğutmuyorsa gaz kaçağı veya kompresör arızası olabilir; bu durumda tamir servisimizle arızayı gideririz.",
+    'faq.q5.q': "Alanya'da klima temizliği ne kadar?",
+    'faq.q5.a': 'Klima temizlik ücreti, cihazın tipine (split, kaset, VRF, salon tipi), kapsamına (standart bakım veya kimyasal derin temizlik) ve kat/erişim şartlarına göre değişir. Net fiyat için bizi arayın, klimanızın detayını belirtin, dakikalar içinde şeffaf fiyat verelim. Sürpriz ek ücret yoktur.',
+    'faq.q6.q': 'Klima ne sıklıkta temizlenmeli?',
+    'faq.q6.a': "Ev tipi split klimalar için yılda 1 kez kimyasal temizlik önerilir; yoğun kullanılan veya tozlu ortamlarda yılda 2 kez yapılmalıdır. Alanya'nın deniz ikliminde tuz ve nem birikimi nedeniyle özellikle yaz başında bakım kritiktir. VRF ve ticari sistemler için ise her 6 ayda bir bakım gereklidir.",
+    'faq.q7.q': 'İkinci el klima almak güvenli mi?',
+    'faq.q7.a': 'Sattığımız ikinci el klimalar montaj öncesinde teknik kontrolden geçirilir; gaz basıncı, kompresör ve soğutma performansı test edilip gerekli bakımı yapılarak teslim edilir. Sıfır klimalarda ise ilgili markanın orijinal garantisi geçerlidir.',
+    'faq.q8.q': 'Klima montajı/kurulumu ne kadar sürede tamamlanır?',
+    'faq.q8.a': 'Standart bir split klima montajı, ortam koşullarına ve boru/kablo mesafesine bağlı olarak genellikle birkaç saat içinde tamamlanır. VRF ve çoklu sistemlerde süre projenin büyüklüğüne göre değişir.',
+    'regions.tag': 'Yakın Hizmet Noktaları',
+    'regions.title': 'Hizmet Verdiğimiz Bölgeler',
+    'regions.desc': "Mobil servis araçlarımızla Alanya'nın tüm mahallelerine ve çevre bölgelerine aynı gün servis sağlıyoruz.",
+    'regions.note': "Alanya'nın tüm mahallelerine ve çevre ilçelerine 7/24 hızlı mobil servisimiz vardır.",
+    'contact.tag': 'İletişime Geçin',
+    'contact.title': 'Bize Ulaşın',
+    'contact.desc': 'Klima satışı, kurulumu, tamiri, bakımı ve temizliği için bize telefon, WhatsApp, e-posta veya sosyal medyadan 7/24 ulaşabilirsiniz.',
+    'contact.phone.label': 'Telefon Numarası',
+    'contact.phone.sub': '7/24 Direkt Arama',
+    'contact.wa.label': 'WhatsApp Hattı',
+    'contact.wa.sub': 'Hızlı Mesaj ve Bilgi',
+    'contact.mail.label': 'E-posta Adresi',
+    'contact.mail.sub': 'Teklif ve Kurumsal İletişim',
+    'contact.ig.label': 'Instagram',
+    'contact.ig.sub': 'Sosyal Medya Sayfamız',
+    'details.hours.title': 'Çalışma Saatleri',
+    'details.hours.text': '7 Gün 24 Saat Kesintisiz Saha Hizmeti',
+    'details.location.title': 'Hizmet Noktası',
+    'details.location.text': "Fiziki ofisimiz bulunmamaktadır. Alanya'nın tüm mahalle ve ilçelerine <strong>adreste mobil servis</strong> hizmeti vermekteyiz.",
+    'details.noform.title': 'Neden Form Yok?',
+    'details.noform.text': 'Klima bakımı acil müdahale gerektiren bir işlemdir. Size en hızlı sürede yardımcı olabilmemiz için form doldurmak yerine doğrudan <strong>Hemen Arayın</strong> veya <strong>WhatsApp üzerinden</strong> iletişime geçin.',
+    'details.cta': '7/24 Tıkla & Ara',
+    'footer.desc': "Alanya'da 7/24 güvenilir klima satışı, kurulumu, tamiri ve temizlik-bakım hizmeti sunan profesyonel çözüm ortağınız. Konforunuz için çalışıyoruz.",
+    'footer.linksTitle': 'Hızlı Linkler',
+    'footer.galleryLink': 'Önce/Sonra Galeri',
+    'footer.waLink': 'WhatsApp Destek Hattı',
+    'footer.copyright': '© 2026 Güneş Klima Bakım ve Temizliği. Tüm hakları saklıdır.',
+    'footer.tagline': 'Designed with care for local business SEO.'
+  };
+
+  var EN = {
+    'nav.home': 'Home',
+    'nav.services': 'Our Services',
+    'nav.why': 'Why Us?',
+    'nav.gallery': 'Before/After',
+    'nav.regions': 'Service Areas',
+    'nav.contact': 'Contact',
+    'btn.call': 'Call Now',
+    'btn.whatsapp': 'Message on WhatsApp',
+    'hero.badge': '24/7 Alanya Air Conditioner Service',
+    'hero.title': 'Air Conditioner Sales, Installation, Repair and Maintenance in Alanya',
+    'hero.subtitle': 'We provide same-day, guaranteed, 24/7 professional solutions for everything related to your air conditioner — new and used AC sales, installation, repair, gas refill and chemical cleaning.',
+    'services.tag': 'Our Areas of Expertise',
+    'services.title': 'Our Services',
+    'services.desc': "From buying and installing an air conditioner to repairing faults and regular maintenance and cleaning, we offer every service you need under one roof.",
+    'services.linkText': 'Learn More & Call',
+    'svc.sale.title': 'New and Used Air Conditioner Sales',
+    'svc.sale.text': 'We supply new and used split, cassette and floor-standing air conditioners that suit your needs and budget, with reliable options. Used units are technically checked and serviced before delivery.',
+    'svc.install.title': 'Air Conditioner Installation Service',
+    'svc.install.text': "We carry out the installation of your newly purchased air conditioner or a unit removed after a move — including indoor/outdoor unit connections and vacuuming — safely, properly and to industry standards.",
+    'svc.repair.title': 'Air Conditioner Repair Service',
+    'svc.repair.text': "For air conditioners that don't cool, leak gas, make noise or don't work at all, we offer fast and guaranteed repair, including fault diagnosis, gas refilling and parts replacement.",
+    'svc.chem.title': 'Chemical Air Conditioner Cleaning',
+    'svc.chem.text': 'We deep-clean the stubborn dirt, bacteria and mould that build up on the evaporator and coil surfaces of your air conditioner using special pressure-cleaning equipment and harmless antibacterial chemicals, maximizing your air quality.',
+    'svc.split.title': 'Split Air Conditioner Cleaning',
+    'svc.split.text': 'We carefully clean the indoor unit filters, fan blades, drain pan and outdoor unit coils of your standard home or office split air conditioner, preventing bad odours and ensuring high performance and energy savings.',
+    'svc.vrf.title': 'VRF / Multi-System Cleaning',
+    'svc.vrf.text': 'Our expert team maintains VRF and multi-split systems used in large commercial businesses, hotels and business centres. We clean the outdoor units and all indoor units to preserve system efficiency.',
+    'svc.cassette.title': 'Cassette-Type Air Conditioner Cleaning',
+    'svc.cassette.text': 'Using special protective covers, we clean the 4-way air panels, condensate pumps and evaporator fins of cassette-type air conditioners mounted in suspended ceilings with pressurized water and chemicals, without causing any damage to the surroundings.',
+    'svc.salon.title': 'Floor-Standing Air Conditioner Cleaning',
+    'svc.salon.text': 'We clean the wide coil surfaces, air filters and internal fan systems of high-capacity floor-standing air conditioners with high airflow, ensuring uninterrupted and clean high air circulation.',
+    'svc.disinfect.title': 'Air Conditioner Disinfection',
+    'svc.disinfect.text': "We eliminate bacteria, mould and viruses that build up in your air conditioner's indoor unit using special antibacterial solutions. This deep hygiene service, critical for asthma, allergy and respiratory issues, prevents bad odours and dust blowing.",
+    'why.tag': 'Why Güneş Klima?',
+    'why.title': 'Why Choose Us?',
+    'why.desc': 'With our mobile service covering all of Alanya, we provide reliable and professional service — from buying and installing to repairing and maintaining your air conditioner.',
+    'why.card1.title': 'Same-Day Service',
+    'why.card1.text': 'By providing fast 24/7 access throughout Alanya, we come to your address and carry out your service on the same day you make your request.',
+    'why.card2.title': 'Guaranteed Workmanship',
+    'why.card2.text': 'Every sale, installation, repair and cleaning job we do is guaranteed. We keep customer satisfaction at the highest level.',
+    'why.card3.title': 'Modern Equipment',
+    'why.card3.text': 'We provide service with zero mess, using professional installation and pressure-washing equipment and protective covers that do no harm to your air conditioner.',
+    'why.card4.title': 'Transparent Pricing',
+    'why.card4.text': 'Before starting any sale, installation or maintenance work, we state everything that will be done — no surprise extra charges afterwards.',
+    'gallery.tag': 'Our Work',
+    'gallery.title': 'Examples of Our Work',
+    'gallery.desc': 'See the hygiene difference we make, shown through before-and-after photos of air conditioner maintenance and cleaning.',
+    'gallery.card1': 'Split AC Evaporator Cleaning',
+    'gallery.card2': 'Chemical Deep Coil Maintenance',
+    'gallery.card3': 'Cassette AC Indoor Unit Fan',
+    'gallery.card4': 'Floor-Standing AC Filter Cleaning',
+    'gallery.card5': 'Outdoor Unit Coil Cleaning',
+    'gallery.card6': 'Drain Pan and Mould Cleaning',
+    'gallery.before': 'Before',
+    'gallery.after': 'After',
+    'faq.tag': 'Frequently Asked Questions',
+    'faq.title': 'Questions About Air Conditioner Service',
+    'faq.desc': "We've answered the most frequently asked questions about air conditioner sales, installation, repair, cleaning and maintenance.",
+    'faq.q1.q': 'Why does my air conditioner smell bad?',
+    'faq.q1.a': "Bad smells from an air conditioner are usually caused by mould, bacteria and organic residue that build up in the indoor unit in humid conditions. Standard filter cleaning doesn't solve this — a deep chemical clean is needed. In Alanya, we disinfect your evaporator and drain pan with same-day service.",
+    'faq.q2.q': 'Why does my air conditioner blow out dust?',
+    'faq.q2.a': "If your AC blows dust, the indoor unit filters and fan blade are seriously dirty. Simply shaking out the filter isn't enough — the fan blades and evaporator need to be washed with pressurized water and chemicals. This improves the air you breathe and extends the unit's lifespan.",
+    'faq.q3.q': 'How do I get rid of the mouldy smell from my AC?',
+    'faq.q3.a': "A mouldy smell won't go away permanently without chemical disinfection. Sprays and home remedies only give temporary results — the smell returns after 1-2 weeks. Professional chemical AC cleaning is a permanent solution because it eliminates mould and bacteria at the source.",
+    'faq.q4.q': "Could dirt be the reason my AC isn't cooling?",
+    'faq.q4.a': "Yes, a dirty filter and clogged coils can reduce an AC's cooling performance by up to 30%. Performance usually returns to normal after maintenance. If it still doesn't cool after cleaning, there may be a gas leak or compressor fault — in that case, our repair service resolves the issue.",
+    'faq.q5.q': 'How much does AC cleaning cost in Alanya?',
+    'faq.q5.a': "The cleaning fee depends on the unit type (split, cassette, VRF, floor-standing), the scope of work (standard maintenance or chemical deep clean) and floor/access conditions. Call us for an exact price — tell us your AC details and we'll give you a transparent quote within minutes. No surprise extra charges.",
+    'faq.q6.q': 'How often should an AC be cleaned?',
+    'faq.q6.a': "For home split air conditioners, chemical cleaning is recommended once a year; in heavily used or dusty environments, twice a year. Due to salt and humidity build-up in Alanya's coastal climate, maintenance is especially critical at the start of summer. VRF and commercial systems require maintenance every 6 months.",
+    'faq.q7.q': 'Is it safe to buy a used air conditioner?',
+    'faq.q7.a': 'The used air conditioners we sell undergo a technical check before installation — gas pressure, compressor and cooling performance are tested, and necessary maintenance is done before delivery. For new units, the original brand warranty applies.',
+    'faq.q8.q': 'How long does air conditioner installation take?',
+    'faq.q8.a': 'A standard split AC installation is usually completed within a few hours, depending on site conditions and pipe/cable distance. For VRF and multi-systems, the duration varies according to the size of the project.',
+    'regions.tag': 'Nearby Service Areas',
+    'regions.title': 'Areas We Serve',
+    'regions.desc': 'With our mobile service vehicles, we provide same-day service to all neighbourhoods of Alanya and surrounding areas.',
+    'regions.note': 'We have a fast 24/7 mobile service covering all neighbourhoods of Alanya and surrounding districts.',
+    'contact.tag': 'Get in Touch',
+    'contact.title': 'Contact Us',
+    'contact.desc': 'For air conditioner sales, installation, repair, maintenance and cleaning, you can reach us 24/7 by phone, WhatsApp, email or social media.',
+    'contact.phone.label': 'Phone Number',
+    'contact.phone.sub': 'Direct Call 24/7',
+    'contact.wa.label': 'WhatsApp Line',
+    'contact.wa.sub': 'Quick Message & Info',
+    'contact.mail.label': 'Email Address',
+    'contact.mail.sub': 'Quotes & Corporate Contact',
+    'contact.ig.label': 'Instagram',
+    'contact.ig.sub': 'Our Social Media Page',
+    'details.hours.title': 'Working Hours',
+    'details.hours.text': 'Uninterrupted Field Service, 24/7, 7 Days a Week',
+    'details.location.title': 'Service Location',
+    'details.location.text': 'We do not have a physical office. We provide <strong>on-site mobile service</strong> to all neighbourhoods and districts of Alanya.',
+    'details.noform.title': 'Why No Contact Form?',
+    'details.noform.text': 'Air conditioner service is often an urgent matter. To help you as quickly as possible, please <strong>Call Now</strong> or contact us <strong>via WhatsApp</strong> directly instead of filling out a form.',
+    'details.cta': 'Tap to Call 24/7',
+    'footer.desc': 'Your professional solution partner in Alanya, offering reliable 24/7 air conditioner sales, installation, repair and cleaning-maintenance services. We work for your comfort.',
+    'footer.linksTitle': 'Quick Links',
+    'footer.galleryLink': 'Before/After Gallery',
+    'footer.waLink': 'WhatsApp Support Line',
+    'footer.copyright': '© 2026 Güneş Klima Bakım ve Temizliği. All rights reserved.',
+    'footer.tagline': 'Designed with care for local business SEO.'
+  };
+
+  var DE = {
+    'nav.home': 'Startseite',
+    'nav.services': 'Unsere Leistungen',
+    'nav.why': 'Warum wir?',
+    'nav.gallery': 'Vorher/Nachher',
+    'nav.regions': 'Servicegebiete',
+    'nav.contact': 'Kontakt',
+    'btn.call': 'Jetzt anrufen',
+    'btn.whatsapp': 'Auf WhatsApp schreiben',
+    'hero.badge': '24/7 Klimaservice in Alanya',
+    'hero.title': 'Klimaverkauf, Installation, Reparatur und Wartung in Alanya',
+    'hero.subtitle': 'Wir bieten Ihnen taggleiche, garantierte und rund um die Uhr erreichbare professionelle Lösungen für alles rund um Ihre Klimaanlage – Verkauf neuer und gebrauchter Klimageräte, Montage, Reparatur, Gasbefüllung und chemische Reinigung.',
+    'services.tag': 'Unsere Fachgebiete',
+    'services.title': 'Unsere Leistungen',
+    'services.desc': 'Vom Kauf und der Montage einer Klimaanlage über die Reparatur von Störungen bis hin zu regelmäßiger Wartung und Reinigung bieten wir Ihnen jede benötigte Leistung aus einer Hand.',
+    'services.linkText': 'Mehr erfahren & anrufen',
+    'svc.sale.title': 'Verkauf neuer und gebrauchter Klimaanlagen',
+    'svc.sale.text': 'Wir liefern neue und gebrauchte Split-, Kassetten- und Standklimageräte passend zu Ihrem Bedarf und Budget mit zuverlässigen Optionen. Gebrauchte Geräte werden vor der Übergabe technisch geprüft und gewartet.',
+    'svc.install.title': 'Klimamontage und Installation',
+    'svc.install.text': 'Wir übernehmen die Montage Ihrer neu gekauften oder nach einem Umzug demontierten Klimaanlage – einschließlich Innen-/Außengeräteanschlüsse und Vakuumierung – sicher, sauber und nach den geltenden Standards.',
+    'svc.repair.title': 'Klimareparatur und Störungsdienst',
+    'svc.repair.text': 'Für Klimaanlagen, die nicht kühlen, Gas verlieren, Geräusche machen oder gar nicht funktionieren, bieten wir einen schnellen und garantierten Reparaturservice inklusive Fehlerdiagnose, Gasbefüllung und Teileaustausch.',
+    'svc.chem.title': 'Chemische Klimareinigung',
+    'svc.chem.text': 'Wir reinigen hartnäckigen Schmutz, Bakterien und Schimmel, die sich an Verdampfer- und Lamellenflächen Ihrer Klimaanlage ansammeln, mit speziellen Hochdruckreinigungsgeräten und unbedenklichen antibakteriellen Chemikalien gründlich – für maximale Luftqualität.',
+    'svc.split.title': 'Reinigung von Split-Klimaanlagen',
+    'svc.split.text': 'Wir reinigen sorgfältig die Innengerätefilter, das Lüfterrad, die Kondenswasserwanne und die Außengerätelamellen Ihrer Standard-Split-Klimaanlage für Zuhause oder Büro – gegen üble Gerüche und für hohe Leistung sowie Energieeinsparung.',
+    'svc.vrf.title': 'VRF-/Multisystem-Reinigung',
+    'svc.vrf.text': 'Unser Fachteam wartet VRF- und Multisplit-Klimasysteme, die in großen Gewerbebetrieben, Hotels und Bürozentren eingesetzt werden. Zur Erhaltung der Systemeffizienz reinigen wir die Außengeräte und alle Innengeräte.',
+    'svc.cassette.title': 'Reinigung von Kassettenklimageräten',
+    'svc.cassette.text': 'Mit speziellen Schutzhüllen reinigen wir die 4-Wege-Luftpaneele, Kondensatpumpen und Verdampferlamellen von in Deckenverkleidungen montierten Kassettenklimageräten mit Druckwasser und Chemikalien, ohne die Umgebung zu beschädigen.',
+    'svc.salon.title': 'Reinigung von Standklimageräten',
+    'svc.salon.text': 'Wir reinigen die großen Lamellenflächen, Luftfilter und internen Ventilatorsysteme von leistungsstarken Standklimageräten mit hohem Luftdurchsatz und sorgen so für einen unterbrechungsfreien, sauberen Luftstrom.',
+    'svc.disinfect.title': 'Klimadesinfektion',
+    'svc.disinfect.text': 'Wir beseitigen Bakterien, Schimmel und Viren, die sich im Innengerät Ihrer Klimaanlage ansammeln, mit speziellen antibakteriellen Lösungen. Dieser für Asthma-, Allergie- und Atemwegsbeschwerden entscheidende Tiefenhygieneservice verhindert üble Gerüche und Staubausstoß.',
+    'why.tag': 'Warum Güneş Klima?',
+    'why.title': 'Warum sollten Sie uns wählen?',
+    'why.desc': 'Mit unserem mobilen Service in ganz Alanya bieten wir zuverlässigen und professionellen Service – vom Kauf über die Montage bis zur Reparatur und Wartung Ihrer Klimaanlage.',
+    'why.card1.title': 'Service am selben Tag',
+    'why.card1.text': 'Dank schnellem 24/7-Zugang in ganz Alanya kommen wir noch am Tag Ihrer Anfrage zu Ihnen und führen den Service durch.',
+    'why.card2.title': 'Garantierte Arbeit',
+    'why.card2.text': 'Jeder Verkauf, jede Montage, Reparatur und Reinigung, die wir durchführen, ist garantiert. Wir legen größten Wert auf Kundenzufriedenheit.',
+    'why.card3.title': 'Moderne Ausrüstung',
+    'why.card3.text': 'Wir arbeiten mit professioneller Montage- und Hochdruckreinigungsausrüstung sowie Schutzhüllen, die Ihrer Klimaanlage nicht schaden, und sorgen so für einen komplett sauberen Ablauf.',
+    'why.card4.title': 'Transparente Preise',
+    'why.card4.text': 'Vor Beginn jeder Verkaufs-, Montage- oder Wartungsarbeit nennen wir alle durchzuführenden Schritte – keine versteckten Zusatzkosten im Nachhinein.',
+    'gallery.tag': 'Unsere Arbeiten',
+    'gallery.title': 'Beispiele unserer Arbeit',
+    'gallery.desc': 'Sehen Sie den Hygieneunterschied, den wir erzielen, anhand von Vorher-Nachher-Bildern der Klimawartung und -reinigung.',
+    'gallery.card1': 'Reinigung des Split-Klima-Verdampfers',
+    'gallery.card2': 'Chemische Tiefenreinigung der Lamellen',
+    'gallery.card3': 'Innengerätelüfter des Kassettenklimageräts',
+    'gallery.card4': 'Filterreinigung des Standklimageräts',
+    'gallery.card5': 'Reinigung der Außengerätelamellen',
+    'gallery.card6': 'Reinigung von Kondenswasserwanne und Schimmel',
+    'gallery.before': 'Vorher',
+    'gallery.after': 'Nachher',
+    'faq.tag': 'Häufig gestellte Fragen',
+    'faq.title': 'Fragen zum Klimaservice',
+    'faq.desc': 'Wir haben die am häufigsten gestellten Fragen zu Klimaverkauf, Installation, Reparatur, Reinigung und Wartung beantwortet.',
+    'faq.q1.q': 'Warum riecht meine Klimaanlage schlecht?',
+    'faq.q1.a': 'Schlechte Gerüche aus der Klimaanlage entstehen meist durch Schimmel, Bakterien und organische Rückstände, die sich im Innengerät unter feuchten Bedingungen ansammeln. Eine normale Filterreinigung löst das Problem nicht – eine chemische Tiefenreinigung ist nötig. In Alanya desinfizieren wir Verdampfer und Kondenswasserwanne noch am selben Tag.',
+    'faq.q2.q': 'Warum bläst meine Klimaanlage Staub aus?',
+    'faq.q2.a': 'Wenn Ihre Klimaanlage Staub ausbläst, sind Innengerätefilter und Lüfterrad stark verschmutzt. Den Filter nur auszuschütteln reicht nicht aus; Lüfterflügel und Verdampfer müssen mit Druckwasser und Chemikalien gewaschen werden. Das verbessert die Luftqualität und verlängert die Lebensdauer des Geräts.',
+    'faq.q3.q': 'Wie werde ich den Schimmelgeruch der Klimaanlage los?',
+    'faq.q3.a': 'Der Schimmelgeruch verschwindet ohne chemische Desinfektion nicht dauerhaft. Sprays und Hausmittel bringen nur vorübergehende Ergebnisse – nach 1-2 Wochen kehrt der Geruch zurück. Die professionelle chemische Klimareinigung ist eine dauerhafte Lösung, da sie Schimmel und Bakterien an der Quelle beseitigt.',
+    'faq.q4.q': 'Kann Schmutz der Grund sein, warum meine Klimaanlage nicht kühlt?',
+    'faq.q4.a': 'Ja, ein verschmutzter Filter und verstopfte Lamellen können die Kühlleistung der Klimaanlage um bis zu 30 % verringern. Nach der Wartung normalisiert sich die Leistung meist wieder. Kühlt sie nach der Reinigung immer noch nicht, könnte ein Gasleck oder Kompressordefekt vorliegen – in diesem Fall beheben wir das Problem mit unserem Reparaturservice.',
+    'faq.q5.q': 'Was kostet eine Klimareinigung in Alanya?',
+    'faq.q5.a': 'Die Reinigungsgebühr hängt vom Gerätetyp (Split, Kassette, VRF, Standgerät), vom Umfang (Standardwartung oder chemische Tiefenreinigung) und den Zugangsbedingungen ab. Rufen Sie uns für einen genauen Preis an, nennen Sie uns die Details Ihrer Klimaanlage – wir geben Ihnen innerhalb weniger Minuten einen transparenten Preis. Keine versteckten Zusatzkosten.',
+    'faq.q6.q': 'Wie oft sollte eine Klimaanlage gereinigt werden?',
+    'faq.q6.a': 'Für Split-Klimaanlagen zu Hause wird eine chemische Reinigung einmal jährlich empfohlen; bei intensiver Nutzung oder staubiger Umgebung zweimal jährlich. Aufgrund von Salz- und Feuchtigkeitsablagerungen im Küstenklima von Alanya ist die Wartung besonders zu Sommerbeginn wichtig. VRF- und gewerbliche Systeme benötigen alle 6 Monate eine Wartung.',
+    'faq.q7.q': 'Ist der Kauf einer gebrauchten Klimaanlage sicher?',
+    'faq.q7.a': 'Die von uns verkauften gebrauchten Klimaanlagen werden vor der Montage technisch geprüft – Gasdruck, Kompressor und Kühlleistung werden getestet und die nötige Wartung durchgeführt, bevor sie übergeben werden. Bei Neugeräten gilt die Originalgarantie des jeweiligen Herstellers.',
+    'faq.q8.q': 'Wie lange dauert die Klimamontage?',
+    'faq.q8.a': 'Eine Standard-Split-Klimamontage ist je nach Gegebenheiten vor Ort und Rohr-/Kabellänge in der Regel innerhalb weniger Stunden abgeschlossen. Bei VRF- und Multisystemen variiert die Dauer je nach Projektgröße.',
+    'regions.tag': 'Nahegelegene Servicegebiete',
+    'regions.title': 'Von uns bediente Gebiete',
+    'regions.desc': 'Mit unseren mobilen Servicefahrzeugen bieten wir allen Stadtteilen Alanyas und den umliegenden Gebieten taggleichen Service.',
+    'regions.note': 'Wir bieten einen schnellen 24/7-Mobilservice für alle Stadtteile Alanyas und die umliegenden Bezirke.',
+    'contact.tag': 'Kontaktieren Sie uns',
+    'contact.title': 'Kontaktieren Sie uns',
+    'contact.desc': 'Für Klimaverkauf, Installation, Reparatur, Wartung und Reinigung erreichen Sie uns rund um die Uhr per Telefon, WhatsApp, E-Mail oder Social Media.',
+    'contact.phone.label': 'Telefonnummer',
+    'contact.phone.sub': 'Direktanruf rund um die Uhr',
+    'contact.wa.label': 'WhatsApp-Nummer',
+    'contact.wa.sub': 'Schnelle Nachricht & Infos',
+    'contact.mail.label': 'E-Mail-Adresse',
+    'contact.mail.sub': 'Angebote & Geschäftskontakt',
+    'contact.ig.label': 'Instagram',
+    'contact.ig.sub': 'Unsere Social-Media-Seite',
+    'details.hours.title': 'Öffnungszeiten',
+    'details.hours.text': 'Ununterbrochener Vor-Ort-Service, 24/7, 7 Tage die Woche',
+    'details.location.title': 'Serviceort',
+    'details.location.text': 'Wir haben kein physisches Büro. Wir bieten <strong>mobilen Service vor Ort</strong> in allen Stadtteilen und Bezirken Alanyas.',
+    'details.noform.title': 'Warum kein Kontaktformular?',
+    'details.noform.text': 'Klimaservice ist oft eine dringende Angelegenheit. Damit wir Ihnen so schnell wie möglich helfen können, <strong>rufen Sie uns bitte direkt an</strong> oder kontaktieren Sie uns <strong>über WhatsApp</strong>, statt ein Formular auszufüllen.',
+    'details.cta': 'Rund um die Uhr anrufen',
+    'footer.desc': 'Ihr professioneller Lösungspartner in Alanya für zuverlässigen 24/7-Klimaverkauf, Installation, Reparatur und Reinigungs-/Wartungsservice. Wir arbeiten für Ihren Komfort.',
+    'footer.linksTitle': 'Schnelllinks',
+    'footer.galleryLink': 'Vorher/Nachher-Galerie',
+    'footer.waLink': 'WhatsApp-Support',
+    'footer.copyright': '© 2026 Güneş Klima Bakım ve Temizliği. Alle Rechte vorbehalten.',
+    'footer.tagline': 'Mit Sorgfalt für lokales Business-SEO gestaltet.'
+  };
+
+  var RU = {
+    'nav.home': 'Главная',
+    'nav.services': 'Наши услуги',
+    'nav.why': 'Почему мы?',
+    'nav.gallery': 'До/После',
+    'nav.regions': 'Зоны обслуживания',
+    'nav.contact': 'Контакты',
+    'btn.call': 'Позвонить сейчас',
+    'btn.whatsapp': 'Написать в WhatsApp',
+    'hero.badge': 'Круглосуточный сервис кондиционеров в Алании',
+    'hero.title': 'Продажа, установка, ремонт и обслуживание кондиционеров в Алании',
+    'hero.subtitle': 'Мы предлагаем профессиональные решения в тот же день, с гарантией и круглосуточным доступом для всех потребностей, связанных с вашим кондиционером — продажа новых и б/у кондиционеров, монтаж, ремонт, заправка фреоном и химическая чистка.',
+    'services.tag': 'Наши направления',
+    'services.title': 'Наши услуги',
+    'services.desc': 'От покупки и установки кондиционера до устранения неисправностей, регулярного обслуживания и чистки — мы предоставляем все необходимые услуги в одном месте.',
+    'services.linkText': 'Подробнее и позвонить',
+    'svc.sale.title': 'Продажа новых и б/у кондиционеров',
+    'svc.sale.text': 'Мы предлагаем новые и б/у сплит-системы, кассетные и напольные кондиционеры, подходящие под ваши потребности и бюджет. Б/у устройства проходят техническую проверку и обслуживание перед передачей.',
+    'svc.install.title': 'Установка и монтаж кондиционеров',
+    'svc.install.text': 'Мы выполняем монтаж вашего нового кондиционера или демонтированного после переезда устройства — включая подключение внутреннего/наружного блока и вакуумирование — безопасно, аккуратно и в соответствии со стандартами.',
+    'svc.repair.title': 'Ремонт и сервис кондиционеров',
+    'svc.repair.text': 'Для кондиционеров, которые не охлаждают, пропускают газ, шумят или вообще не работают, мы предлагаем быстрый и гарантированный ремонт, включая диагностику неисправностей, заправку фреоном и замену деталей.',
+    'svc.chem.title': 'Химическая чистка кондиционеров',
+    'svc.chem.text': 'Мы глубоко очищаем стойкую грязь, бактерии и плесень, скапливающиеся на испарителе и поверхностях радиатора кондиционера, с помощью специального оборудования под давлением и безвредных антибактериальных химикатов, обеспечивая максимальное качество воздуха.',
+    'svc.split.title': 'Чистка сплит-систем',
+    'svc.split.text': 'Мы тщательно очищаем фильтры внутреннего блока, крыльчатку вентилятора, дренажный поддон и радиатор наружного блока вашей стандартной бытовой или офисной сплит-системы, предотвращая неприятные запахи и обеспечивая высокую производительность и энергосбережение.',
+    'svc.vrf.title': 'Чистка VRF/мульти-систем',
+    'svc.vrf.text': 'Наша команда экспертов проводит обслуживание VRF- и мульти-сплит систем, используемых в крупных коммерческих предприятиях, отелях и бизнес-центрах. Мы очищаем наружные блоки и все внутренние блоки для сохранения эффективности системы.',
+    'svc.cassette.title': 'Чистка кассетных кондиционеров',
+    'svc.cassette.text': 'С помощью специальных защитных чехлов мы очищаем 4-сторонние воздушные панели, конденсатные насосы и рёбра испарителя кассетных кондиционеров, установленных в подвесных потолках, используя воду под давлением и химикаты, не нанося вреда окружающей обстановке.',
+    'svc.salon.title': 'Чистка напольных кондиционеров',
+    'svc.salon.text': 'Мы очищаем широкие поверхности радиатора, воздушные фильтры и внутренние вентиляторные системы напольных кондиционеров большой мощности с высоким расходом воздуха, обеспечивая бесперебойный и чистый воздушный поток.',
+    'svc.disinfect.title': 'Дезинфекция кондиционеров',
+    'svc.disinfect.text': 'Мы уничтожаем бактерии, плесень и вирусы, скапливающиеся во внутреннем блоке вашего кондиционера, с помощью специальных антибактериальных растворов. Эта глубокая гигиеническая услуга, критически важная при астме, аллергии и заболеваниях дыхательных путей, предотвращает неприятные запахи и выброс пыли.',
+    'why.tag': 'Почему Güneş Klima?',
+    'why.title': 'Почему стоит выбрать нас?',
+    'why.desc': 'Благодаря нашей мобильной службе, работающей по всей Алании, мы предоставляем надёжный и профессиональный сервис — от покупки и монтажа до ремонта и обслуживания вашего кондиционера.',
+    'why.card1.title': 'Обслуживание в тот же день',
+    'why.card1.text': 'Благодаря быстрому круглосуточному выезду по всей Алании мы приезжаем к вам и выполняем услугу в тот же день, когда вы оставили заявку.',
+    'why.card2.title': 'Гарантия на работу',
+    'why.card2.text': 'Каждая продажа, монтаж, ремонт и чистка, которые мы выполняем, имеют гарантию. Мы поддерживаем максимальный уровень удовлетворённости клиентов.',
+    'why.card3.title': 'Современное оборудование',
+    'why.card3.text': 'Мы предоставляем услуги без единого загрязнения, используя профессиональное монтажное и моечное оборудование под давлением, а также защитные чехлы, которые не наносят вреда вашему кондиционеру.',
+    'why.card4.title': 'Прозрачные цены',
+    'why.card4.text': 'Перед началом любой продажи, монтажа или обслуживания мы озвучиваем все предстоящие работы — никаких скрытых доплат впоследствии.',
+    'gallery.tag': 'Наши работы',
+    'gallery.title': 'Примеры наших работ',
+    'gallery.desc': 'Оцените разницу в гигиене, которую мы обеспечиваем, на фото до и после обслуживания и чистки кондиционера.',
+    'gallery.card1': 'Чистка испарителя сплит-кондиционера',
+    'gallery.card2': 'Химическое глубокое обслуживание радиатора',
+    'gallery.card3': 'Вентилятор внутреннего блока кассетного кондиционера',
+    'gallery.card4': 'Чистка фильтра напольного кондиционера',
+    'gallery.card5': 'Чистка радиатора наружного блока',
+    'gallery.card6': 'Чистка дренажного поддона и плесени',
+    'gallery.before': 'До',
+    'gallery.after': 'После',
+    'faq.tag': 'Часто задаваемые вопросы',
+    'faq.title': 'Вопросы об обслуживании кондиционеров',
+    'faq.desc': 'Мы ответили на самые часто задаваемые вопросы о продаже, установке, ремонте, чистке и обслуживании кондиционеров.',
+    'faq.q1.q': 'Почему от кондиционера исходит неприятный запах?',
+    'faq.q1.a': 'Неприятный запах от кондиционера обычно вызван плесенью, бактериями и органическими остатками, скапливающимися во внутреннем блоке во влажной среде. Обычная чистка фильтра не решает проблему — нужна глубокая химическая чистка. В Алании мы дезинфицируем испаритель и дренажный поддон вашего кондиционера в тот же день.',
+    'faq.q2.q': 'Почему кондиционер выдувает пыль?',
+    'faq.q2.a': 'Если кондиционер выдувает пыль, значит фильтры внутреннего блока и крыльчатка вентилятора сильно загрязнены. Простого встряхивания фильтра недостаточно — лопасти вентилятора и испаритель нужно промыть водой под давлением с химикатами. Это улучшает качество вдыхаемого воздуха и продлевает срок службы кондиционера.',
+    'faq.q3.q': 'Как избавиться от запаха плесени от кондиционера?',
+    'faq.q3.a': 'Запах плесени не исчезнет навсегда без химической дезинфекции. Спреи и домашние средства дают лишь временный эффект — запах возвращается через 1-2 недели. Профессиональная химическая чистка кондиционера — это долгосрочное решение, так как она устраняет плесень и бактерии у источника.',
+    'faq.q4.q': 'Может ли грязь быть причиной того, что кондиционер не охлаждает?',
+    'faq.q4.a': 'Да, грязный фильтр и засорённые радиаторы могут снизить производительность охлаждения кондиционера до 30%. После обслуживания производительность обычно возвращается в норму. Если после чистки кондиционер всё ещё не охлаждает, возможна утечка газа или неисправность компрессора — в этом случае наш ремонтный сервис устранит неполадку.',
+    'faq.q5.q': 'Сколько стоит чистка кондиционера в Алании?',
+    'faq.q5.a': 'Стоимость чистки зависит от типа устройства (сплит, кассетный, VRF, напольный), объёма работ (стандартное обслуживание или глубокая химическая чистка) и условий доступа/этажа. Позвоните нам для точной цены, сообщите детали вашего кондиционера — мы дадим прозрачную цену за несколько минут. Никаких скрытых доплат.',
+    'faq.q6.q': 'Как часто нужно чистить кондиционер?',
+    'faq.q6.a': 'Для бытовых сплит-кондиционеров рекомендуется химическая чистка раз в год; при интенсивном использовании или пыльной среде — два раза в год. Из-за накопления соли и влаги в прибрежном климате Алании обслуживание особенно важно в начале лета. VRF-системы и коммерческое оборудование требуют обслуживания каждые 6 месяцев.',
+    'faq.q7.q': 'Безопасно ли покупать б/у кондиционер?',
+    'faq.q7.a': 'Продаваемые нами б/у кондиционеры проходят техническую проверку перед установкой — тестируются давление газа, компрессор и производительность охлаждения, выполняется необходимое обслуживание перед передачей. Для новых кондиционеров действует оригинальная гарантия производителя.',
+    'faq.q8.q': 'Сколько времени занимает установка кондиционера?',
+    'faq.q8.a': 'Стандартная установка сплит-кондиционера обычно занимает несколько часов, в зависимости от условий помещения и длины труб/кабеля. Для VRF и мульти-систем время зависит от масштаба проекта.',
+    'regions.tag': 'Ближайшие зоны обслуживания',
+    'regions.title': 'Регионы обслуживания',
+    'regions.desc': 'С помощью наших мобильных сервисных автомобилей мы обеспечиваем обслуживание в тот же день во всех районах Алании и прилегающих территориях.',
+    'regions.note': 'У нас есть быстрая круглосуточная мобильная служба, охватывающая все районы Алании и соседние округа.',
+    'contact.tag': 'Свяжитесь с нами',
+    'contact.title': 'Свяжитесь с нами',
+    'contact.desc': 'По вопросам продажи, установки, ремонта, обслуживания и чистки кондиционеров вы можете связаться с нами круглосуточно по телефону, WhatsApp, электронной почте или в соцсетях.',
+    'contact.phone.label': 'Номер телефона',
+    'contact.phone.sub': 'Прямой звонок 24/7',
+    'contact.wa.label': 'Линия WhatsApp',
+    'contact.wa.sub': 'Быстрое сообщение и информация',
+    'contact.mail.label': 'Электронная почта',
+    'contact.mail.sub': 'Заявки и корпоративная связь',
+    'contact.ig.label': 'Instagram',
+    'contact.ig.sub': 'Наша страница в соцсетях',
+    'details.hours.title': 'Часы работы',
+    'details.hours.text': 'Непрерывное выездное обслуживание 24/7, 7 дней в неделю',
+    'details.location.title': 'Место обслуживания',
+    'details.location.text': 'У нас нет физического офиса. Мы предоставляем <strong>мобильное обслуживание на месте</strong> во всех районах и округах Алании.',
+    'details.noform.title': 'Почему нет формы обратной связи?',
+    'details.noform.text': 'Обслуживание кондиционера часто требует срочного вмешательства. Чтобы мы могли помочь вам как можно быстрее, вместо заполнения формы, пожалуйста, <strong>позвоните нам сейчас</strong> или свяжитесь <strong>через WhatsApp</strong>.',
+    'details.cta': 'Нажмите и позвоните 24/7',
+    'footer.desc': 'Ваш профессиональный партнёр в Алании, предлагающий надёжные круглосуточные услуги продажи, установки, ремонта и чистки-обслуживания кондиционеров. Мы работаем ради вашего комфорта.',
+    'footer.linksTitle': 'Быстрые ссылки',
+    'footer.galleryLink': 'Галерея До/После',
+    'footer.waLink': 'Линия поддержки WhatsApp',
+    'footer.copyright': '© 2026 Güneş Klima Bakım ve Temizliği. Все права защищены.',
+    'footer.tagline': 'Разработано с заботой о локальном SEO для бизнеса.'
+  };
+
+  var TRANSLATIONS = { tr: TR, en: EN, de: DE, ru: RU };
+
+  function detectLanguage() {
+    try {
+      var saved = window.localStorage.getItem(STORAGE_KEY);
+      if (saved && SUPPORTED.indexOf(saved) !== -1) return saved;
+    } catch (e) { /* localStorage unavailable, ignore */ }
+
+    var nav = (navigator.language || navigator.userLanguage || 'tr').toLowerCase().slice(0, 2);
+    if (SUPPORTED.indexOf(nav) !== -1) return nav;
+    return 'tr';
+  }
+
+  function applyLanguage(lang) {
+    if (SUPPORTED.indexOf(lang) === -1) lang = 'tr';
+    var dict = TRANSLATIONS[lang];
+
+    var textNodes = document.querySelectorAll('[data-i18n]');
+    for (var i = 0; i < textNodes.length; i++) {
+      var el = textNodes[i];
+      var key = el.getAttribute('data-i18n');
+      if (dict[key]) el.textContent = dict[key];
+    }
+
+    var htmlNodes = document.querySelectorAll('[data-i18n-html]');
+    for (var j = 0; j < htmlNodes.length; j++) {
+      var elH = htmlNodes[j];
+      var keyH = elH.getAttribute('data-i18n-html');
+      if (dict[keyH]) elH.innerHTML = dict[keyH];
+    }
+
+    document.documentElement.setAttribute('lang', lang);
+
+    var meta = META[lang];
+    if (meta) {
+      if (document.title !== undefined) document.title = meta.title;
+      var metaDesc = document.getElementById('metaDescription');
+      if (metaDesc) metaDesc.setAttribute('content', meta.description);
+    }
+
+    var buttons = document.querySelectorAll('.lang-btn');
+    for (var k = 0; k < buttons.length; k++) {
+      var btn = buttons[k];
+      var isActive = btn.getAttribute('data-lang') === lang;
+      btn.classList.toggle('active', isActive);
+      if (isActive) btn.setAttribute('aria-current', 'true');
+      else btn.removeAttribute('aria-current');
+    }
+
+    try { window.localStorage.setItem(STORAGE_KEY, lang); } catch (e) { /* ignore */ }
+  }
+
+  function setupSwitchers() {
+    var buttons = document.querySelectorAll('.lang-btn');
+    for (var i = 0; i < buttons.length; i++) {
+      buttons[i].addEventListener('click', function () {
+        var lang = this.getAttribute('data-lang');
+        applyLanguage(lang);
+      });
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    setupSwitchers();
+    applyLanguage(detectLanguage());
+  });
+})();
