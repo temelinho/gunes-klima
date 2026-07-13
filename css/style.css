@@ -210,6 +210,19 @@ button {
   width: auto;
 }
 
+.logo-icon {
+  display: none;
+}
+
+@media (max-width: 400px) {
+  .logo-full {
+    display: none;
+  }
+  .logo-icon {
+    display: block;
+  }
+}
+
 /* Masaüstü Navigasyon - Varsayılan olarak mobilde gizlenir */
 .main-nav {
   display: none;
