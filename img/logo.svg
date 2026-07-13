@@ -16,6 +16,8 @@
   </g>
   
   <!-- Logotip Metni -->
-  <text x="55" y="32" font-family="'Inter', -apple-system, BlinkMacSystemFont, sans-serif" font-size="18" font-weight="800" fill="#003D7A" letter-spacing="0.5">GÜNEŞ</text>
-  <text x="120" y="32" font-family="'Inter', -apple-system, BlinkMacSystemFont, sans-serif" font-size="18" font-weight="400" fill="#0066CC" letter-spacing="0.5">KLİMA</text>
+  <text x="55" y="32" font-family="'Inter', -apple-system, BlinkMacSystemFont, sans-serif" font-size="18" letter-spacing="0.5">
+    <tspan font-weight="800" fill="#003D7A">GÜNEŞ</tspan>
+    <tspan font-weight="400" fill="#0066CC" dx="8">KLİMA</tspan>
+  </text>
 </svg>
