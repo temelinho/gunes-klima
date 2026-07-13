@@ -203,23 +203,32 @@ button {
 .logo-link {
   display: flex;
   align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
 }
 
-.logo-img {
-  height: 45px;
-  width: auto;
+.logo-icon-img {
+  height: 40px;
+  width: 40px;
+  flex-shrink: 0;
 }
 
-.logo-icon {
-  display: none;
+.logo-text {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 1.125rem;
+  letter-spacing: 0.5px;
+  color: #0066CC;
+  white-space: nowrap;
 }
 
-@media (max-width: 400px) {
-  .logo-full {
+.logo-text strong {
+  font-weight: 800;
+  color: #003D7A;
+}
+
+@media (max-width: 480px) {
+  .logo-text {
     display: none;
-  }
-  .logo-icon {
-    display: block;
   }
 }
 
